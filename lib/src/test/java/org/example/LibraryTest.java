@@ -70,6 +70,10 @@ class LibraryTest {
         }
 
         System.out.println("===============================");
+        if (intervalEnd.getTimeInMillis() < intervalStart.getTimeInMillis()) {
+            intervalEnd.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+
         System.out.println("Before change DAY_OF_WEEK to Saturday " + formatTime(intervalEnd));
         intervalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
         System.out.println("After change DAY_OF_WEEK to Saturday " + formatTime(intervalEnd));
@@ -109,10 +113,15 @@ class LibraryTest {
             intervalStart.add(Calendar.WEEK_OF_YEAR, -1);  // MODIFICATION 1
             intervalEnd.add(Calendar.WEEK_OF_YEAR, -1);  // MODIFICATION 2
         }
+        if (intervalEnd.getTimeInMillis() < intervalStart.getTimeInMillis()) {
+            intervalEnd.add(Calendar.WEEK_OF_YEAR, 1);
+        }
+
         intervalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
         if (intervalEnd.getTimeInMillis() <= intervalStart.getTimeInMillis()) {
             intervalEnd.add(Calendar.WEEK_OF_MONTH, 1);
         }
         Assertions.assertTrue(intervalStart.getTimeInMillis() < intervalEnd.getTimeInMillis());
+        System.out.println("Final interval : " + formatTimeUTC(intervalStart) + " TILL " + formatTimeUTC(intervalEnd));
     }
 }
