@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 class LibraryTest {
-
     private ZonedDateTime currentTime;
     private long currentTimeEpochMillis;
 
