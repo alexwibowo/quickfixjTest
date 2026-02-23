@@ -49,16 +49,6 @@ class LibraryTest {
         intervalStart.set(Calendar.SECOND, 0);
         intervalStart.set(Calendar.MILLISECOND, 0);
 
-        System.out.println("Before change DAY_OF_WEEK to Sunday " + formatTime(intervalStart));
-        intervalStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        System.out.println("After change DAY_OF_WEEK to Sunday " + formatTime(intervalStart));
-        if (intervalStart.getTimeInMillis() > currentTimeEpochMillis) {
-            System.out.println("Before subtracting WEEK_OF_YEAR by 1 " + intervalStart.getTime());
-            intervalStart.add(Calendar.WEEK_OF_YEAR, -1);
-            System.out.println("After subtracting WEEK_OF_YEAR by 1" + intervalStart.getTime());
-        }
-
-        System.out.println("===============================");
         final Calendar intervalEnd = fromZonedDateTime(currentTime);
         intervalEnd.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         intervalEnd.setTimeInMillis(currentTimeEpochMillis);
@@ -67,10 +57,21 @@ class LibraryTest {
         intervalEnd.set(Calendar.SECOND, 0);
         intervalEnd.set(Calendar.MILLISECOND, 0);
 
-        System.out.println("Before subtracting WEEK_OF_YEAR by 1 " + formatTime(intervalEnd));
-        intervalEnd.add(Calendar.WEEK_OF_YEAR, -1);
-        System.out.println("After subtracting WEEK_OF_YEAR by 1 " + formatTime(intervalEnd));
+        System.out.println("Before change DAY_OF_WEEK to Sunday " + formatTime(intervalStart));
+        intervalStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        System.out.println("After change DAY_OF_WEEK to Sunday " + formatTime(intervalStart));
 
+        if (intervalStart.getTimeInMillis() > currentTimeEpochMillis) {
+            System.out.println("Before subtracting WEEK_OF_YEAR by 1 " + intervalStart.getTime());
+            intervalStart.add(Calendar.WEEK_OF_YEAR, -1); // MODIFICATION 1
+            System.out.println("After subtracting WEEK_OF_YEAR by 1" + intervalStart.getTime());
+
+            System.out.println("Before subtracting WEEK_OF_YEAR by 1 " + formatTime(intervalEnd));
+            intervalEnd.add(Calendar.WEEK_OF_YEAR, -1);  // MODIFICATION 2
+            System.out.println("After subtracting WEEK_OF_YEAR by 1 " + formatTime(intervalEnd));
+        }
+
+        System.out.println("===============================");
         System.out.println("Before change DAY_OF_WEEK to Saturday " + formatTime(intervalEnd));
         intervalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
         System.out.println("After change DAY_OF_WEEK to Saturday " + formatTime(intervalEnd));
@@ -88,6 +89,7 @@ class LibraryTest {
 
     @Test
     void testSimplify() {
+        // this is to mimic behavior of  quickfix.DefaultSessionSchedule#theMostRecentIntervalBefore
         final Calendar intervalStart = fromZonedDateTime(currentTime);
         intervalStart.setTimeZone(TimeZone.getTimeZone("Australia/Victoria"));
         intervalStart.setTimeInMillis(currentTimeEpochMillis);
@@ -96,12 +98,6 @@ class LibraryTest {
         intervalStart.set(Calendar.SECOND, 0);
         intervalStart.set(Calendar.MILLISECOND, 0);
 
-        intervalStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        if (intervalStart.getTimeInMillis() > currentTimeEpochMillis) {
-            intervalStart.add(Calendar.WEEK_OF_YEAR, -1);
-        }
-
-        System.out.println("===============================");
         final Calendar intervalEnd = fromZonedDateTime(currentTime);
         intervalEnd.setTimeZone(TimeZone.getTimeZone("America/New_York"));
         intervalEnd.setTimeInMillis(currentTimeEpochMillis);
@@ -110,9 +106,12 @@ class LibraryTest {
         intervalEnd.set(Calendar.SECOND, 0);
         intervalEnd.set(Calendar.MILLISECOND, 0);
 
-        intervalEnd.add(Calendar.WEEK_OF_YEAR, -1);
+        intervalStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        if (intervalStart.getTimeInMillis() > currentTimeEpochMillis) {
+            intervalStart.add(Calendar.WEEK_OF_YEAR, -1);  // MODIFICATION 1
+            intervalEnd.add(Calendar.WEEK_OF_YEAR, -1);  // MODIFICATION 2
+        }
         intervalEnd.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-
         if (intervalEnd.getTimeInMillis() <= intervalStart.getTimeInMillis()) {
             intervalEnd.add(Calendar.WEEK_OF_MONTH, 1);
         }
